@@ -6,27 +6,26 @@ import colorama
 from config import App
 from colorama import Fore
 
-
 embedding_models = ["SeqVec", "Bert", "ProtT5"]
 embedding_types = ["SingleSeq", "MSA"]
 evolutionary_information_types = ["None", "MSAConsensus", "PSSM"]
 pssm_models = ["Concat", "Split"]
 RED = "\033[31m"
+config = App.config()
 
 
 def select_model_from_config(device):
-    config = App.config()
     # we need this for color coded print statements
     colorama.init(autoreset=True)
 
-    if not is_valid_config(config):
+    if not is_valid_config():
         sys.exit("Config is invalid. Please provide a valid config file.")
     print("Config file is valid")
 
-    return select_model(config, device)
+    return select_model(device)
 
 
-def is_valid_config(config):
+def is_valid_config():
     # No sections => File doesn't exist or is missing sections
     if len(config.sections()) == 0:
         print("Config file not found or empty")
@@ -97,10 +96,12 @@ def is_valid_config(config):
             return False
         # TODO: check PSSM format?
 
+    # TODO: check lookup file for PSSMs
+
     return True
 
 
-def select_model(config, device):
+def select_model(device):
     config_general_section = config["GENERAL"]
     embedding_model = config_general_section["embedding_model"].lower()
     embedding_type = config_general_section["embedding_type"].lower()
@@ -143,3 +144,29 @@ def select_model(config, device):
           f'"{evolutionary_information if embedding_type != "msa" else "MSAEmbeddings"}" has been loaded')
 
     return model
+
+
+def use_pssms():
+    config_general_section = config["GENERAL"]
+    embedding_type = config_general_section["embedding_type"].lower()
+    evolutionary_information = config["SINGLE SEQUENCE EMBEDDINGS"]["evolutionary_information"].lower()
+
+    if embedding_type == "msa":
+        return False
+    if evolutionary_information != "pssm":
+        return False
+    return True
+
+
+def get_dataset_parameters():
+    config_general_section = config["GENERAL"]
+
+    embedding_folder = config_general_section["embedding_folder"]
+    use_pssm = use_pssms()
+    pssm_file = config["PSSM"]["pssm_file"]
+    lookup_file = config["PSSM"]["lookup_file"]
+
+    # TODO: implement non low memory option
+    low_memory = True
+
+    return embedding_folder, use_pssm, pssm_file, lookup_file, low_memory
