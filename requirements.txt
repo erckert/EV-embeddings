@@ -1,0 +1,5 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==1.11.0+cu113
+colorama~=0.4.6
+numpy~=1.22.3
+biopython~=1.80
