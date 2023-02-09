@@ -158,6 +158,17 @@ def use_pssms():
     return True
 
 
+def predict_msa_consensus():
+    config_general_section = config["GENERAL"]
+    embedding_type = config_general_section["embedding_type"].lower()
+    evolutionary_information = config["SINGLE SEQUENCE EMBEDDINGS"]["evolutionary_information"].lower()
+    if embedding_type == "msa":
+        return False
+    if evolutionary_information != "msaconsensus":
+        return False
+    return True
+
+
 def get_dataset_parameters():
     config_general_section = config["GENERAL"]
 
