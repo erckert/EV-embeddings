@@ -15,7 +15,7 @@ class App:
                 description='Create predictions for different types of embeddings with and without evolutionary '
                             'information')
             parser.add_argument('-f',
-                                default="ev_embeddings.ini",
+                                default="src/ev_embeddings.ini",
                                 type=str,
                                 help='File path to .ini file if it isn\'t ev_embeddings.ini',
                                 metavar="file_path")

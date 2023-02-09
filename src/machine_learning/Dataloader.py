@@ -1,6 +1,6 @@
 import torch
 
-from src.machine_learning.Collate import ProteinCollate
+from machine_learning.Collate import ProteinCollate
 
 
 def get_padded_data_loader(dataset, batch_size):

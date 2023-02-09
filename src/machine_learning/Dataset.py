@@ -3,7 +3,7 @@ import ntpath
 import torch
 
 import numpy as np
-from src.setup.configProcessor import get_dataset_parameters, predict_msa_consensus
+from setup.configProcessor import get_dataset_parameters, predict_msa_consensus
 
 
 def map_pssms(use_pssm, pssm_file, lookup_file):

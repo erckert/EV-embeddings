@@ -3,7 +3,7 @@ import os
 import torch
 import colorama
 
-from src.config import App
+from config import App
 from colorama import Fore
 
 embedding_models = ["SeqVec", "Bert", "ProtT5"]
@@ -117,7 +117,7 @@ def select_model(device):
         case _:
             sys.exit(f"Error: No sub folder found for model {embedding_model}. Please contact the development team.")
 
-    model_folder_path = os.path.join("pretrained_models", model_sub_folder)
+    model_folder_path = os.path.join("src", "pretrained_models", model_sub_folder)
 
     match embedding_type:
         case "msa":
