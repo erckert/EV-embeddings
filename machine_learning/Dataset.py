@@ -3,7 +3,7 @@ import ntpath
 import torch
 
 import numpy as np
-from setup.configProcessor import get_dataset_parameters
+from setup.configProcessor import get_dataset_parameters, predict_msa_consensus
 
 
 def map_pssms(use_pssm, pssm_file, lookup_file):
@@ -66,10 +66,10 @@ class ProteinBasedEmbeddingDataset:
         embedding_paths = [os.path.join(self.embedding_folder, embedding_name)
                            for embedding_name in os.listdir(self.embedding_folder)]
         for embedding_path in embedding_paths:
-            embedding = np.load(embedding_path)
             protein_id = ntpath.basename(embedding_path).replace(".npy", "")
             self.protein_ids.append(protein_id)
             if not low_memory:
+                embedding = np.load(embedding_path)
                 self.embeddings.append(embedding)
 
         print('Finished loading the dataset')
@@ -98,15 +98,64 @@ class ProteinBasedEmbeddingDataset:
                 print("Debug me!")
             data = torch.cat((data, pssm_entry_tensor), 1)
 
-        return data, id_chain
+        return data, id_chain, id_chain
+
+
+class ProteinBasedMSAConsensusEmbeddingDataset:
+    def __init__(self, embedding_folder, low_memory=True):
+        print('Loading dataset')
+        self.low_memory = low_memory
+        self.last_embedding_name = ''
+        self.last_embedding = None
+
+        self.embeddings = []
+        self.protein_ids = []
+        self.embedding_folder = embedding_folder
+
+        embedding_sub_folders = [os.path.join(self.embedding_folder, embedding_folder) for embedding_folder
+                                 in os.listdir(self.embedding_folder)]
+        self.embedding_paths = []
+        for folder in embedding_sub_folders:
+            for entry in os.listdir(folder):
+                self.embedding_paths.append(os.path.join(folder, entry))
+        for embedding_path in self.embedding_paths:
+            protein_id = ntpath.basename(embedding_path).replace(".npy", "")
+            self.protein_ids.append(protein_id)
+            if not low_memory:
+                embedding = np.load(embedding_path)
+                self.embeddings.append(embedding)
+
+        print('Finished loading the dataset')
+
+    def __len__(self):
+        return len(self.protein_ids)
+
+    def __getitem__(self, item):
+        protein_id = self.protein_ids[item]
+        embedding_path = self.embedding_paths[item]
+        query_id = os.path.normpath(embedding_path).split(os.path.sep)[-2]
+
+        if self.low_memory:
+            if not self.last_embedding_name == protein_id:
+                self.last_embedding_name = protein_id
+                self.last_embedding = np.load(embedding_path)
+
+            data = torch.tensor(self.last_embedding).float()
+        else:
+            data = torch.tensor(self.embeddings[item]).float()
+
+        return data, protein_id, query_id
 
 
 def load_dataset():
     embedding_folder, use_pssm, pssm_file, lookup_file, low_memory = get_dataset_parameters()
-    return ProteinBasedEmbeddingDataset(
-        embedding_folder,
-        low_memory=low_memory,
-        use_pssm=use_pssm,
-        pssm_file=pssm_file,
-        lookup_file=lookup_file
-    )
+    if predict_msa_consensus():
+        return ProteinBasedMSAConsensusEmbeddingDataset(embedding_folder)
+    else:
+        return ProteinBasedEmbeddingDataset(
+            embedding_folder,
+            low_memory=low_memory,
+            use_pssm=use_pssm,
+            pssm_file=pssm_file,
+            lookup_file=lookup_file
+            )
