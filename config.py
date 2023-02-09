@@ -2,6 +2,7 @@ import configparser
 import argparse
 import os
 
+
 class App:
     file_path = None
     _conf = None
