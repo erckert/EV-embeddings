@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 
-from config import App
+from src.config import App
 from Bio import AlignIO
 
 

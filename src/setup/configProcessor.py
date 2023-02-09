@@ -3,7 +3,7 @@ import os
 import torch
 import colorama
 
-from config import App
+from src.config import App
 from colorama import Fore
 
 embedding_models = ["SeqVec", "Bert", "ProtT5"]

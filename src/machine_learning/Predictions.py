@@ -2,7 +2,7 @@ import itertools
 
 import torch
 
-from config import App
+from src.config import App
 
 
 def predict(device, model, dataloader):
