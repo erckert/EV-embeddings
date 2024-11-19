@@ -1,6 +1,6 @@
 # EV-embeddings
 
-EV-embeddings provides the trained models from our paper XXXX. The used dataset is available at XXXX. 
+EV-embeddings provides the trained models from our paper [Assessing the role of evolutionary information for enhancing protein language model embeddings](https://doi.org/10.1038/s41598-024-71783-8). The used dataset is available at [https://doi.org/10.5281/zenodo.10026192](https://doi.org/10.5281/zenodo.10026192). 
 
 ## Table of Contents
 
@@ -63,13 +63,15 @@ The pretrained models and provided code are released under terms of the [GNU Gen
 If you use this code or our pretrained models for your publication, please cite the original paper:
 ```
 @ARTICLE
-{XXXXXXX,
+{EV_embeddings,
 author={Erckert, Kyra and Rost, Burkhard},
-journal={XXXXXX},
-title={Exploring the Evolutionary Information Encoded in Protein Language Model Embeddings},
-year={2023},
-volume={},
-number={},
-pages={XXXXXXXX},
-doi={XXXXXXXXX}}
+title={Assessing the role of evolutionary information for enhancing protein language model embeddings},
+journal={Scientific Reports},
+year={2024},
+month={Sep},
+day={05},
+volume={14},
+number={1},
+pages={20692},
+doi={10.1038/s41598-024-71783-8}}
 ```
